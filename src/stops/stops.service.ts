@@ -19,7 +19,7 @@ export class StopsService {
   }
 
   public async getContaining(phrase: string): Promise<Stop[]> {
-    return this.stopModel.find({ name: { $regex: phrase } }).exec();
+    return this.stopModel.find({ name: new RegExp(phrase, 'i') }).exec();
   }
 
   private async create(dto: CreateStopDto): Promise<Stop> {
@@ -51,6 +51,27 @@ export class StopsService {
       });
     });
 
+    await Promise.all(promises);
+
+    await this.removeDuplicates();
+  }
+
+  private async removeDuplicates(): Promise<void> {
+    //remove stops with same names
+    const stops = await this.stopModel.find().exec();
+    const stopsMap = new Map<string, Stop>();
+    stops.forEach((stop) => {
+      stopsMap.set(stop.name, stop);
+    });
+    const stopsWithoutDuplicates = Array.from(stopsMap.values());
+    await this.stopModel.deleteMany({}).exec();
+    const promises = stopsWithoutDuplicates.map((stop) => {
+      return this.create({
+        id: stop.id,
+        name: stop.name,
+        description: stop.description,
+      });
+    });
     await Promise.all(promises);
   }
 }
