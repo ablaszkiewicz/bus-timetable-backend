@@ -1,9 +1,17 @@
 import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { StopsModule } from './stops/stops.module';
 
 @Module({
-  imports: [],
+  imports: [
+    StopsModule,
+    MongooseModule.forRoot(
+      'mongodb+srv://mongo:Rakoczego19@cluster0.n6jywaf.mongodb.net/?',
+      { dbName: 'bus-timetable-backend' },
+    ),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
