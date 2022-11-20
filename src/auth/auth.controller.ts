@@ -1,16 +1,26 @@
 import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { CreateUserDtoFromFrontend } from 'src/users/dto/create-user.dto';
+import { UsersService } from 'src/users/users.service';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @Controller()
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private usersService: UsersService,
+  ) {}
 
-  // @UseGuards(LocalAuthGuard)
-  // @Post('auth/login')
-  // async login(@Request() req): Promise<any> {
-  //   return this.authService.login(req.user);
-  // }
+  @Post('auth/register')
+  async register(@Body() dto: CreateUserDtoFromFrontend) {
+    this.usersService.create(dto);
+  }
+
+  @UseGuards(LocalAuthGuard)
+  @Post('auth/login')
+  async login(@Request() req): Promise<any> {
+    return this.authService.login(req.user);
+  }
 
   @Post('auth/google/login')
   async googleLogin(@Body() body: GoogleBody) {

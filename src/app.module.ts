@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { StopsModule } from './stops/stops.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { StopsModule } from './stops/stops.module';
       'mongodb+srv://mongo:Rakoczego19@cluster0.n6jywaf.mongodb.net/?',
       { dbName: 'bus-timetable-backend' },
     ),
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

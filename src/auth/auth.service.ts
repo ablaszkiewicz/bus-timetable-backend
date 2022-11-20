@@ -1,35 +1,38 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import axios from 'axios';
+import { compare, hashSync } from 'bcrypt';
 import { firstValueFrom } from 'rxjs';
+import { User } from 'src/users/entities/user.entity';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
     private httpService: HttpService,
+    private usersService: UsersService,
   ) {}
 
-  // async validateUser(email: string, password: string): Promise<any> {
-  //   const user = await this.usersService.getOneByEmail(email);
+  async validateUser(email: string, password: string): Promise<any> {
+    const user = await this.usersService.getOneByEmail(email);
 
-  //   if (user && user.password === password) {
-  //     return { id: user.id, email: user.email };
-  //   }
+    if (user && compare(user.passwordHash, password)) {
+      return { id: user._id, email: user.email };
+    }
 
-  //   return null;
-  // }
+    return null;
+  }
 
-  // async login(user: User) {
-  //   const payload = { sub: user.id, email: user.email };
+  async login(user: User) {
+    const payload = { sub: user._id, email: user.email };
 
-  //   return {
-  //     id: user.id,
-  //     email: user.email,
-  //     token: this.jwtService.sign(payload),
-  //   };
-  // }
+    return {
+      id: user._id,
+      email: user.email,
+      token: this.jwtService.sign(payload),
+    };
+  }
 
   async googleLogin(googleToken: string) {
     const response = await firstValueFrom(
@@ -39,14 +42,14 @@ export class AuthService {
     );
     const email = response.data.email;
 
-    // let user = await this.usersService.getOneByEmail(email);
+    let user = await this.usersService.getOneByEmail(email);
 
-    // if (!user) {
-    //   await this.usersService.createUser({ email, password: '12345678' });
-    //   user = await this.usersService.getOneByEmail(email);
-    // }
+    if (!user) {
+      await this.usersService.create({ email, password: '' });
+      user = await this.usersService.getOneByEmail(email);
+    }
 
-    const payload = { email: email, sub: 5 };
+    const payload = { email: user.email, sub: user._id };
 
     return {
       //id: user.id,
