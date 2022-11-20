@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { hashSync } from 'bcrypt';
+import { hashSync } from 'bcryptjs';
 import { Model } from 'mongoose';
 import {
   CreateUserDto,

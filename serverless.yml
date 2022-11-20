@@ -12,6 +12,8 @@ functions:
   main:
     timeout: 120
     handler: dist/serverless.handler
+    environment:
+      JWT_SECRET: ${env:JWT_SECRET}
     events:
       - http:
           method: ANY

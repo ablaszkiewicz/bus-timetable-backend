@@ -26,8 +26,17 @@ export class AuthController {
   async googleLogin(@Body() body: GoogleBody) {
     return this.authService.googleLogin(body.googleToken);
   }
+
+  @Post('auth/github/login')
+  async githubLogin(@Body() body: GithubBody) {
+    return this.authService.githubLogin(body.code);
+  }
 }
 
 interface GoogleBody {
   googleToken: string;
+}
+
+interface GithubBody {
+  code: string;
 }
