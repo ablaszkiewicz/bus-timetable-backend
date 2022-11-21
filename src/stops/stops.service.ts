@@ -48,6 +48,8 @@ export class StopsService {
         id: +stop.stopId,
         name: stop.stopName,
         description: stop.stopDesc,
+        lat: +stop.stopLat,
+        lon: +stop.stopLon,
       });
     });
 
@@ -70,6 +72,8 @@ export class StopsService {
         id: stop.id,
         name: stop.name,
         description: stop.description,
+        lat: stop.lat,
+        lon: stop.lon,
       });
     });
     await Promise.all(promises);

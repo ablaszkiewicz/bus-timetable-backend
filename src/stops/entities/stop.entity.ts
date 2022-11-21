@@ -13,6 +13,12 @@ export class Stop {
 
   @Prop()
   description: string;
+
+  @Prop()
+  lat: number;
+
+  @Prop()
+  lon: number;
 }
 
 export const StopSchema = SchemaFactory.createForClass(Stop);

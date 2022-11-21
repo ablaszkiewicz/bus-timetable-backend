@@ -5,6 +5,7 @@ import { compare } from 'bcryptjs';
 import { firstValueFrom } from 'rxjs';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
+import { GoogleResponse } from './models/GoogleModels';
 
 @Injectable()
 export class AuthService {
@@ -34,7 +35,7 @@ export class AuthService {
   }
 
   async googleLogin(googleToken: string) {
-    const response = await firstValueFrom(
+    const response: GoogleResponse = await firstValueFrom(
       this.httpService.post(
         `https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${googleToken}`,
       ),
