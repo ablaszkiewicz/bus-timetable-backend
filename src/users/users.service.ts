@@ -10,7 +10,7 @@ import { User, UserDocument } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private stopModel: Model<UserDocument>) {}
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   create(createUserDto: CreateUserDtoFromFrontend) {
     const hashedPassword = hashSync(createUserDto.password, 10);
@@ -20,19 +20,34 @@ export class UsersService {
       passwordHash: hashedPassword,
     };
 
-    const createdUser = new this.stopModel(dtoWithHash);
+    const createdUser = new this.userModel(dtoWithHash);
     return createdUser.save();
   }
 
-  getOneById(id: number) {
-    return this.stopModel.findOne({
-      id,
+  getOneByEmail(email: string) {
+    return this.userModel.findOne({
+      email,
     });
   }
 
-  getOneByEmail(email: string) {
-    return this.stopModel.findOne({
-      email,
-    });
+  async getFavouriteStops(email: string) {
+    const user = await this.getOneByEmail(email);
+    return user.favouriteStops;
+  }
+
+  async addFavouriteStop(email: string, stopId: number) {
+    const user = await this.getOneByEmail(email);
+    if (!user.favouriteStops.includes(stopId)) {
+      user.favouriteStops.push(stopId);
+    }
+    return user.save();
+  }
+
+  async removeFavouriteStop(email: string, stopId: number) {
+    const user = await this.getOneByEmail(email);
+    user.favouriteStops = user.favouriteStops.filter(
+      (favouriteStopId) => favouriteStopId != stopId,
+    );
+    return user.save();
   }
 }

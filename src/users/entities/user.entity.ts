@@ -12,6 +12,9 @@ export class User {
 
   @Prop()
   passwordHash: string;
+
+  @Prop()
+  favouriteStops: number[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
