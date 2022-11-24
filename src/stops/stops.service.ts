@@ -46,7 +46,7 @@ export class StopsService {
     const promises = filteredStops.map((stop) => {
       return this.create({
         id: +stop.stopId,
-        name: stop.stopName,
+        name: stop.stopName + ' ' + stop.subName,
         description: stop.stopDesc,
         lat: +stop.stopLat,
         lon: +stop.stopLon,
@@ -54,8 +54,6 @@ export class StopsService {
     });
 
     await Promise.all(promises);
-
-    await this.removeDuplicates();
   }
 
   private async removeDuplicates(): Promise<void> {
