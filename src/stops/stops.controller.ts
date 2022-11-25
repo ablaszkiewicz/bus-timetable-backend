@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param } from '@nestjs/common';
+import { Controller, Get, Post, Param, Query } from '@nestjs/common';
 import { StopsService } from './stops.service';
 
 @Controller('stops')
@@ -8,6 +8,17 @@ export class StopsController {
   @Get()
   findAll() {
     return this.stopsService.getAll();
+  }
+
+  @Get('extent')
+  getWithinExtent(@Query() query) {
+    console.log(query);
+    return this.stopsService.getWithinExtent(
+      query.xMin,
+      query.yMin,
+      query.xMax,
+      query.yMax,
+    );
   }
 
   @Get('contains/:contains')
